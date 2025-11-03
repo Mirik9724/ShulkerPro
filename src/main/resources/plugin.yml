@@ -1,0 +1,8 @@
+name: ShulkerPro
+version: '1.0.0'
+main: net.Mirik9724.ShulkerPro.ShulkerPro
+api-version: '1.18'
+prefix: ShulkerPro
+authors: [ Mirik9724 ]
+description: With this plugin you can open shulkers in your hands while holding down the shift key.
+website: https://modrinth.com/plugin/shulkerpro
