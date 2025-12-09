@@ -21,38 +21,49 @@ class ShulkerOpen(private var pluginInstance: JavaPlugin) : Listener {
     fun onPlayerInteract(event: PlayerInteractEvent) {
         val player = event.player
         val item = event.item ?: return
-        val meta = item.itemMeta as? BlockStateMeta ?: return
-        val shulkerState = meta.blockState as? ShulkerBox ?: return
 
         if (!player.isSneaking) return
         if (event.action != Action.RIGHT_CLICK_BLOCK && event.action != Action.RIGHT_CLICK_AIR) return
 
-        // Отменяем стандартное открытие шёлкера, чтобы не конфликтовало с GUI
+        val meta = item.itemMeta as? BlockStateMeta ?: return
+        val shulkerState = meta.blockState as? ShulkerBox ?: return
+
+        // ✅ пытаемся дать поставить блок
+        if (event.action == Action.RIGHT_CLICK_BLOCK) {
+            val clicked = event.clickedBlock ?: return
+            val target = clicked.getRelative(event.blockFace)
+
+            val canPlace =
+                target.type == org.bukkit.Material.AIR ||
+                        target.type == org.bukkit.Material.CAVE_AIR ||
+                        target.type == org.bukkit.Material.VOID_AIR ||
+                        !target.type.isSolid
+
+            if (canPlace) {
+                return // ваниль сама поставит
+            }
+        }
+
+        // ❌ поставить нельзя — открываем в руке
         event.isCancelled = true
 
-        // Попытка поставить блок через ванильную логику
-        // Используем runTaskLater, чтобы дать Minecraft шанс поставить блок
-        Bukkit.getScheduler().runTaskLater(pluginInstance, Runnable {
-            val handItem = if (item == player.inventory.itemInMainHand) player.inventory.itemInMainHand else player.inventory.itemInOffHand
-            val handMeta = handItem.itemMeta as? BlockStateMeta ?: return@Runnable
-            val handShulker = handMeta.blockState as? ShulkerBox ?: return@Runnable
+        val title = if (meta.hasDisplayName()) {
+            meta.displayName
+        } else {
+            item.type.name.lowercase()
+                .replace('_', ' ')
+                .replaceFirstChar { it.uppercase() }
+        }
 
-            // Если предмет остался на месте — открыть GUI
-            val displayName = if (handItem.hasItemMeta() && handItem.itemMeta!!.hasDisplayName()) {
-                handItem.itemMeta!!.displayName
-            } else {
-                handItem.type.name.replace('_', ' ').lowercase().replaceFirstChar { it.uppercase() }
-            }
+        val inv = Bukkit.createInventory(null, 27, title)
+        inv.contents = shulkerState.inventory.contents
 
-            val inventory: Inventory = Bukkit.createInventory(null, 27, displayName)
-            inventory.contents = handShulker.inventory.contents
+        val offHand = item == player.inventory.itemInOffHand
+        openedShulkers[player.uniqueId] = OpenedShulker(item.clone(), offHand)
 
-            val offHand = handItem == player.inventory.itemInOffHand
-            openedShulkers[player.uniqueId] = OpenedShulker(handItem.clone(), offHand)
-
-            player.openInventory(inventory)
-        }, 1L)
+        player.openInventory(inv)
     }
+
 
     @EventHandler
     fun onInventoryClose(event: InventoryCloseEvent) {
