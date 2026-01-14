@@ -1,5 +1,6 @@
 package net.Mirik9724.ShulkerPro
 
+import net.Mirik9724.api.isAvailableNewVersion
 import org.bukkit.plugin.java.JavaPlugin
 import net.mirik9724.api.bstats.bukkit.Metrics
 
@@ -11,6 +12,8 @@ class ShulkerPro : JavaPlugin() {
         server.pluginManager.registerEvents(shulkerOpen, this)
 
         val metrics: Metrics = Metrics(this, 28845)
+        if(isAvailableNewVersion("https://raw.githubusercontent.com/Mirik9724/ShulkerPro/refs/heads/master/V", this.description.version))
+
         logger.info("Plugin ON")
     }
 
