@@ -12,7 +12,9 @@ class ShulkerPro : JavaPlugin() {
         server.pluginManager.registerEvents(shulkerOpen, this)
 
         val metrics: Metrics = Metrics(this, 28845)
-        if(isAvailableNewVersion("https://raw.githubusercontent.com/Mirik9724/ShulkerPro/refs/heads/master/V", this.description.version))
+        if(isAvailableNewVersion("https://raw.githubusercontent.com/Mirik9724/ShulkerPro/refs/heads/master/V", this.description.version)){
+            logger.info {"New version available"}
+        }
 
         logger.info("Plugin ON")
     }
