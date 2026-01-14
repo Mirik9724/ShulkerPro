@@ -6,7 +6,9 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
@@ -28,23 +30,13 @@ class ShulkerOpen(private var pluginInstance: JavaPlugin) : Listener {
         val meta = item.itemMeta as? BlockStateMeta ?: return
         val shulkerState = meta.blockState as? ShulkerBox ?: return
 
-        // ✅ пытаемся дать поставить блок
         if (event.action == Action.RIGHT_CLICK_BLOCK) {
             val clicked = event.clickedBlock ?: return
             val target = clicked.getRelative(event.blockFace)
 
-            val canPlace =
-                target.type == org.bukkit.Material.AIR ||
-                        target.type == org.bukkit.Material.CAVE_AIR ||
-                        target.type == org.bukkit.Material.VOID_AIR ||
-                        !target.type.isSolid
-
-            if (canPlace) {
-                return // ваниль сама поставит
-            }
+            if (!target.type.isSolid) return
         }
 
-        // ❌ поставить нельзя — открываем в руке
         event.isCancelled = true
 
         val title = if (meta.hasDisplayName()) {
@@ -55,13 +47,32 @@ class ShulkerOpen(private var pluginInstance: JavaPlugin) : Listener {
                 .replaceFirstChar { it.uppercase() }
         }
 
-        val inv = Bukkit.createInventory(null, 27, title)
+        val size = shulkerState.inventory.size
+        val inv = Bukkit.createInventory(null, size, title)
         inv.contents = shulkerState.inventory.contents
 
         val offHand = item == player.inventory.itemInOffHand
-        openedShulkers[player.uniqueId] = OpenedShulker(item.clone(), offHand)
+        openedShulkers[player.uniqueId] = OpenedShulker(item, offHand)
 
         player.openInventory(inv)
+    }
+
+    @EventHandler
+    fun onInventoryClick(event: InventoryClickEvent) {
+        val player = event.whoClicked as? Player ?: return
+        val opened = openedShulkers[player.uniqueId] ?: return
+
+        val cursor = event.cursor
+        val current = event.currentItem
+
+        if (cursor != null && cursor.isSimilar(opened.original)) {
+            event.isCancelled = true
+            return
+        }
+
+        if (current != null && current.isSimilar(opened.original)) {
+            event.isCancelled = true
+        }
     }
 
 

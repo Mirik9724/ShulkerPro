@@ -5,18 +5,20 @@ plugins {
 }
 
 group = "net.Mirik9724"
-version = "1.2.0"
+version = "1.3"
 
 repositories {
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") {
         name = "spigotmc-repo"
     }
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    compileOnly("com.github.Mirik9724:MirikAPI:0.1.5.1")
 }
 
 tasks {
