@@ -6,6 +6,6 @@ The plugin preserves all items inside the shulker box and retains its custom nam
 
 ShulkerPro is ideal for survival gameplay, PvP, and mini-games where quick access to shulker contents can improve convenience and efficiency.
 
-[Lib-Dependence](https://github.com/Mirik9724/MirikAPI/releases/tag/0.1.5)
+[Lib-Dependence](https://github.com/Mirik9724/MirikAPI/releases/tag/0.1.5)  
 [How it work RU](https://youtube.com/shorts/KJwzXhY1jJ4)  
-[How it work RU ALT](https://vk.com/wall-223416235_242)
+[How it work RU ALT](https://vk.com/wall-223416235_242)  
