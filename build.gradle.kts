@@ -5,27 +5,22 @@ plugins {
 }
 
 group = "net.Mirik9724"
-version = "1.3"
+version = "1.4"
 
 repositories {
     mavenCentral()
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") {
-        name = "spigotmc-repo"
-    }
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    compileOnly("com.github.Mirik9724:MirikAPI:0.1.5.1")
+    compileOnly("com.github.Mirik9724:MirikAPI:v0.1.5.8")
 }
 
 tasks {
     runServer {
-        // Configure the Minecraft version for our task.
-        // This is the only required configuration besides applying the plugin.
-        // Your plugin's jar (or shadowJar if present) will be used automatically.
         minecraftVersion("1.20.1")
     }
 }

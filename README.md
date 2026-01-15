@@ -1,4 +1,5 @@
 # ShulkerPro
+## With plugin you can open shulker in your hand!
 
 ShulkerPro is a Minecraft plugin that allows players to open shulker boxes directly from their hand by holding **Shift** and right-clicking. This eliminates the need to place the shulker box to access its contents.
 

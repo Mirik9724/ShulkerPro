@@ -2,7 +2,11 @@ package net.Mirik9724.ShulkerPro
 
 import net.Mirik9724.api.isAvailableNewVersion
 import org.bukkit.plugin.java.JavaPlugin
-import net.mirik9724.api.bstats.bukkit.Metrics
+import net.Mirik9724.api.bstats.bukkit.Metrics
+import net.Mirik9724.api.copyFileFromJar
+import net.Mirik9724.api.loadYmlFile
+import net.Mirik9724.api.tryCreatePath
+import java.io.File
 
 class ShulkerPro : JavaPlugin() {
     private lateinit var shulkerOpen: ShulkerOpen
@@ -11,9 +15,19 @@ class ShulkerPro : JavaPlugin() {
         shulkerOpen = ShulkerOpen(this)
         server.pluginManager.registerEvents(shulkerOpen, this)
 
-        val metrics: Metrics = Metrics(this, 28845)
-        if(isAvailableNewVersion("https://raw.githubusercontent.com/Mirik9724/ShulkerPro/refs/heads/master/V", this.description.version)){
-            logger.info {"New version available"}
+        tryCreatePath(File("plugins/ShulkerPro"))
+
+        copyFileFromJar("config.yml", "plugins/ShulkerPro")
+
+        val conf = loadYmlFile("plugins/ShulkerPro/config.yml")
+
+        if(conf["useMetrics"] == "true") {
+            val metrics: Metrics = Metrics(this, 28845)
+        }
+        if(conf["checkUpdates"] == "true") {
+            if(isAvailableNewVersion("https://raw.githubusercontent.com/Mirik9724/ShulkerPro/refs/heads/master/V", this.description.version)){
+                logger.info {"New version available"}
+            }
         }
 
         logger.info("Plugin ON")
