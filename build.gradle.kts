@@ -16,8 +16,7 @@ repositories {
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-//    compileOnly("com.github.Mirik9724:MirikAPI:v0.1.5.8")
-    compileOnly(files("MirikAPI-0.1.5.9.jar"))
+    compileOnly("com.github.Mirik9724:MirikAPI:v0.1.5.9")
 }
 
 tasks {
