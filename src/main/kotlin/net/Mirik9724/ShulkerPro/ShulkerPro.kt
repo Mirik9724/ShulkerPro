@@ -17,12 +17,12 @@ class ShulkerPro : JavaPlugin() {
 
         tryCreatePath(File("plugins/ShulkerPro"))
 
-        copyFileFromJar("config.yml", "plugins/ShulkerPro")
+        copyFileFromJar("config.yml", "plugins/ShulkerPro", this.javaClass.classLoader)
 
         val conf = loadYmlFile("plugins/ShulkerPro/config.yml")
 
         if(conf["useMetrics"] == "true") {
-            val metrics: Metrics = Metrics(this, 28845)
+            Metrics(this, 28845)
         }
         if(conf["checkUpdates"] == "true") {
             if(isAvailableNewVersion("https://raw.githubusercontent.com/Mirik9724/ShulkerPro/refs/heads/master/V", this.description.version)){

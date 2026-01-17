@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "net.Mirik9724"
-version = "1.4"
+version = "1.5"
 
 repositories {
     mavenCentral()
@@ -16,7 +16,8 @@ repositories {
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    compileOnly("com.github.Mirik9724:MirikAPI:v0.1.5.8")
+//    compileOnly("com.github.Mirik9724:MirikAPI:v0.1.5.8")
+    compileOnly(files("MirikAPI-0.1.5.9.jar"))
 }
 
 tasks {
