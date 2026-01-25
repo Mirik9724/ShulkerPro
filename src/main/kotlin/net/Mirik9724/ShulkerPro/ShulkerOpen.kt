@@ -8,9 +8,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BlockStateMeta
 import org.bukkit.plugin.java.JavaPlugin
@@ -73,8 +71,18 @@ class ShulkerOpen(private var pluginInstance: JavaPlugin) : Listener {
         if (current != null && current.isSimilar(opened.original)) {
             event.isCancelled = true
         }
-    }
 
+
+        if(conf["shulkerInShulker"] == "true") { return }
+        else{
+            val item = cursor ?: current ?: return
+            val meta = item.itemMeta as? BlockStateMeta ?: return
+
+            if (meta.blockState is ShulkerBox) {
+                event.isCancelled = true
+            }
+        }
+    }
 
     @EventHandler
     fun onInventoryClose(event: InventoryCloseEvent) {

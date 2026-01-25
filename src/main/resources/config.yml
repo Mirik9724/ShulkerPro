@@ -1,2 +1,5 @@
 useMetrics: true
 checkUpdates: true
+
+# You can put a shulker in a shulker
+shulkerInShulker: false

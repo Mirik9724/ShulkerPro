@@ -1,7 +1,7 @@
 name: ShulkerPro
-version: '1.4'
+version: '1.5.1'
 main: net.Mirik9724.ShulkerPro.ShulkerPro
-api-version: '1.18'
+api-version: '1.13'
 prefix: ShulkerPro
 authors: [ Mirik9724 ]
 description: With plugin you can open shulker in your hand!

@@ -6,8 +6,10 @@ import net.Mirik9724.api.bstats.bukkit.Metrics
 import net.Mirik9724.api.copyFileFromJar
 import net.Mirik9724.api.loadYmlFile
 import net.Mirik9724.api.tryCreatePath
+import net.Mirik9724.api.updateYmlFromJar
 import java.io.File
 
+lateinit var conf: Map<String,String>
 class ShulkerPro : JavaPlugin() {
     private lateinit var shulkerOpen: ShulkerOpen
 
@@ -18,8 +20,9 @@ class ShulkerPro : JavaPlugin() {
         tryCreatePath(File("plugins/ShulkerPro"))
 
         copyFileFromJar("config.yml", "plugins/ShulkerPro", this.javaClass.classLoader)
+        updateYmlFromJar("config.yml", "plugins/ShulkerPro/config.yml", this.javaClass.classLoader)
 
-        val conf = loadYmlFile("plugins/ShulkerPro/config.yml")
+        conf = loadYmlFile("plugins/ShulkerPro/config.yml")
 
         if(conf["useMetrics"] == "true") {
             Metrics(this, 28845)
