@@ -1,13 +1,16 @@
 package net.Mirik9724.ShulkerPro
 
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.block.ShulkerBox
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
+import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BlockStateMeta
@@ -55,6 +58,30 @@ class ShulkerOpen(private var pluginInstance: JavaPlugin) : Listener {
         player.openInventory(inv)
     }
 
+    fun isShulker(item: ItemStack?): Boolean {
+        if (item == null) return false
+        return when (item.type) {
+            Material.SHULKER_BOX,
+            Material.WHITE_SHULKER_BOX,
+            Material.ORANGE_SHULKER_BOX,
+            Material.MAGENTA_SHULKER_BOX,
+            Material.LIGHT_BLUE_SHULKER_BOX,
+            Material.YELLOW_SHULKER_BOX,
+            Material.LIME_SHULKER_BOX,
+            Material.PINK_SHULKER_BOX,
+            Material.GRAY_SHULKER_BOX,
+            Material.LIGHT_GRAY_SHULKER_BOX,
+            Material.CYAN_SHULKER_BOX,
+            Material.PURPLE_SHULKER_BOX,
+            Material.BLUE_SHULKER_BOX,
+            Material.BROWN_SHULKER_BOX,
+            Material.GREEN_SHULKER_BOX,
+            Material.RED_SHULKER_BOX,
+            Material.BLACK_SHULKER_BOX -> true
+            else -> false
+        }
+    }
+
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent) {
         val player = event.whoClicked as? Player ?: return
@@ -63,23 +90,38 @@ class ShulkerOpen(private var pluginInstance: JavaPlugin) : Listener {
         val cursor = event.cursor
         val current = event.currentItem
 
-        if (cursor != null && cursor.isSimilar(opened.original)) {
+        if ((cursor?.isSimilar(opened.original) == true) || (current?.isSimilar(opened.original) == true)) {
             event.isCancelled = true
             return
         }
 
-        if (current != null && current.isSimilar(opened.original)) {
-            event.isCancelled = true
+
+        if (conf["shulkerInShulker"] == "true") {
         }
-
-
-        if(conf["shulkerInShulker"] == "true") { return }
         else{
-            val item = cursor ?: current ?: return
-            val meta = item.itemMeta as? BlockStateMeta ?: return
+            val clickedInv = event.clickedInventory ?: return
+            val topInv = event.view.topInventory
 
-            if (meta.blockState is ShulkerBox) {
-                event.isCancelled = true
+            if (clickedInv == topInv) {
+                if (isShulker(cursor)) {
+                    event.isCancelled = true
+                    return
+                }
+            }
+
+            if (clickedInv != topInv && event.isShiftClick) {
+                if (isShulker(current)) {
+                    event.isCancelled = true
+                    return
+                }
+            }
+
+            if (event.click == ClickType.NUMBER_KEY && clickedInv == topInv) {
+                val hotbarItem = player.inventory.getItem(event.hotbarButton)
+                if (isShulker(hotbarItem)) {
+                    event.isCancelled = true
+                    return
+                }
             }
         }
     }
@@ -90,10 +132,12 @@ class ShulkerOpen(private var pluginInstance: JavaPlugin) : Listener {
 
         val openedShulker = openedShulkers.remove(player.uniqueId) ?: return
 
-        val shulkerItem = if (openedShulker.offHand) {
-            player.inventory.itemInOffHand
-        } else {
-            player.inventory.itemInMainHand
+        val inventoryContents = player.inventory.contents
+        val shulkerItem = inventoryContents.find { it != null && it.isSimilar(openedShulker.original) }
+
+        if (shulkerItem == null) {
+//            player.sendMessage("§cОшибка: Шалкер не найден в инвентаре. Изменения не сохранены!")
+            return
         }
 
         val meta = shulkerItem.itemMeta as? BlockStateMeta ?: return
